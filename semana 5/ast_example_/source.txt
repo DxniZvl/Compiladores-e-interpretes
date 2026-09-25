@@ -1,0 +1,6 @@
+var:int testVar;
+var:int numVar = 10;
+var:bool boolVar = true;
+var:char charVar = "a";
+var:str strVar = "string";
+const:int numConst = 10;
