@@ -1,0 +1,7 @@
+var:str hello = "Hello world";
+
+var:int result = 3+4;
+var:int other = result -1;
+printv result;
+printv other;
+printv hello;
