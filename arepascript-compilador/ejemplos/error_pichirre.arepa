@@ -1,0 +1,3 @@
+// Demuestra: "Ese pichirre no suelta el valor."
+pichirre PI: quebrao = 3.1416;
+PI = 3;

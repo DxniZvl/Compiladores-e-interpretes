@@ -1,0 +1,31 @@
+// Programa de demostracion en Arepascript
+
+pichirre ANIO: ta_completo = 2026;
+vaina nombre: cuento = "Ana";
+vaina nota: quebrao;
+vaina aprobado = nada_que_ver;
+
+nota = 85.5;
+aprobado = chevere;
+
+echale ANIO;
+echale nombre;
+echale nota;
+echale aprobado;
+
+// tipo automatico
+vaina edad = 20;
+vaina precio = 9.99;
+vaina inicial: letra = 'A';
+
+edad = edad + 1;
+
+echale edad;
+echale precio;
+echale inicial;
+
+// operaciones: ta_completo + quebrao da quebrao
+vaina doble: quebrao = edad * 2;
+vaina mitad: quebrao = precio / 2;
+echale doble;
+echale mitad;
