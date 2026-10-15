@@ -1,7 +1,7 @@
 // Programa de demostracion en Arepascript
 
 pichirre ANIO: ta_completo = 2026;
-vaina nombre: cuento = "Ana";
+vaina nombre: cuento = "Daniel";
 vaina nota: quebrao;
 vaina aprobado = nada_que_ver;
 
@@ -29,3 +29,4 @@ vaina doble: quebrao = edad * 2;
 vaina mitad: quebrao = precio / 2;
 echale doble;
 echale mitad;
+
