@@ -1,0 +1,90 @@
+// =====================================================================
+//  Gramática del pseudolenguaje MSQL  ->  PostgreSQL
+//
+//  * Cada instrucción ocupa una sola línea (sin ';' ni BEGIN/END).
+//  * Las palabras clave no distinguen mayúsculas de minúsculas.
+//  * Las líneas vacías y los comentarios (# ... o -- ...) se ignoran.
+// =====================================================================
+
+start: _NL? (statement (_NL statement)* _NL?)?
+
+?statement: make_stmt
+          | get_stmt
+          | put_stmt
+          | drop_stmt
+
+// ---------- MAKE  ->  CREATE TABLE -----------------------------------
+make_stmt: _MAKE NAME "(" column_def ("," column_def)* ")"
+column_def: NAME type_spec
+type_spec: TYPE_NAME BANG?
+
+// ---------- GET  ->  SELECT ------------------------------------------
+get_stmt: _GET field_list _FROM NAME where_clause? sort_clause? top_clause?
+field_list: _ALL                        -> all_fields
+          | NAME ("," NAME)*            -> named_fields
+sort_clause: _SORT NAME DIRECTION?
+top_clause: _TOP INT
+
+// ---------- PUT  ->  INSERT / UPDATE ---------------------------------
+put_stmt: _PUT NAME "(" assignment ("," assignment)* ")" where_clause?
+assignment: NAME "=" value
+
+// ---------- DROP  ->  DELETE / DROP TABLE ----------------------------
+drop_stmt: _DROP NAME where_clause?
+
+// ---------- Condiciones (precedencia: NOT > AND > OR) -----------------
+where_clause: _WHERE condition
+
+?condition: or_expr
+?or_expr: and_expr (_OR and_expr)*
+?and_expr: not_expr (_AND not_expr)*
+?not_expr: _NOT not_expr                -> not_cond
+         | comparison
+         | "(" condition ")"            -> group
+comparison: NAME COMP_OP value
+
+COMP_OP: "<>" | "!=" | "<=" | ">=" | "=" | "<" | ">"
+
+// ---------- Valores literales ----------------------------------------
+?value: STRING                          -> string
+      | SIGNED_NUMBER                   -> number
+      | TRUE                            -> true
+      | FALSE                           -> false
+      | NULL                            -> null
+
+STRING: /'(?:[^'\n]|'')*'/ | /"(?:[^"\\\n]|\\.)*"/
+
+// ---------- Palabras clave (insensibles a mayúsculas) -----------------
+// \b evita que un identificador como "makers" se lea como MAKE.
+_MAKE.2:   /make\b/i
+_GET.2:    /get\b/i
+_PUT.2:    /put\b/i
+_DROP.2:   /drop\b/i
+_FROM.2:   /from\b/i
+_WHERE.2:  /where\b/i
+_SORT.2:   /sort\b/i
+_TOP.2:    /top\b/i
+_ALL.2:    /all\b/i
+_AND.2:    /and\b/i
+_OR.2:     /or\b/i
+_NOT.2:    /not\b/i
+DIRECTION.2: /(asc|desc)\b/i
+TRUE.2:    /true\b/i
+FALSE.2:   /false\b/i
+NULL.2:    /null\b/i
+
+// Tipos del pseudolenguaje: id, num, text, bool, time (+ '!' opcional)
+TYPE_NAME.1: /(id|num|text|bool|time)\b/i
+BANG: "!"
+
+NAME: /[A-Za-z_][A-Za-z0-9_]*/
+
+COMMENT: /(#|--)[^\n]*/
+// Un salto de línea absorbe las líneas vacías y de comentario que le siguen.
+_NL: /(\r?\n[\t ]*((#|--)[^\n]*)?)+/
+
+%import common.INT
+%import common.SIGNED_NUMBER
+%import common.WS_INLINE
+%ignore WS_INLINE
+%ignore COMMENT
